@@ -14,6 +14,54 @@ export default class List extends React.Component {
     this.bottomElement = React.createRef();
   }
 
+  componentDidMount = () => this.initiateScrollObserver();
+
+  componentDidUpdate = (prevProps, prevState) => {
+    let { start, end } = this.state;
+    if (prevState.start !== start || prevState.end !== end) {
+      this.initiateScrollObserver();
+    }
+  };
+
+  initiateScrollObserver = () => {
+    const options = {
+      root: null,
+      rootMargin: "0px",
+      threshold: 0.1
+    };
+    this.observer = new IntersectionObserver(this.callBack, options);
+    if (this.topElement.current) this.observer.observe(this.topElement.current);
+    if (this.bottomElement.current)
+      this.observer.observe(this.bottomElement.current);
+  };
+
+  callBack = (entries, observer) => {
+    entries.forEach((entry, index) => {
+      const listLength = this.props.list.length;
+      const { start, end } = this.state;
+      // Scroll Down
+      // We make increments and decrements in 10s
+      if (entry.isIntersecting && entry.target.id === "bottom") {
+        const maxStartIndex = listLength - 1 - this.THRESHOLD; // Maximum index value `start` can take
+        const maxEndIndex = listLength - 1; // Maximum index value `end` can take
+        const newEnd = end + 10 <= maxEndIndex ? end + 10 : maxEndIndex;
+        const newStart = end - 5 <= maxStartIndex ? end - 5 : maxStartIndex;
+        this.updateState(newStart, newEnd);
+      }
+      // Scroll up
+      if (entry.isIntersecting && entry.target.id === "top") {
+        const newEnd =
+          end === this.THRESHOLD
+            ? this.THRESHOLD
+            : end - 10 > this.THRESHOLD
+            ? end - 10
+            : this.THRESHOLD;
+        let newStart = start === 0 ? 0 : start - 10 > 0 ? start - 10 : 0;
+        this.updateState(newStart, newEnd);
+      }
+    });
+  };
+
   updateState = (newStart, newEnd) => {
     const { start, end } = this.state;
     if (start !== newStart || end !== newEnd) {
@@ -23,6 +71,13 @@ export default class List extends React.Component {
         end: newEnd
       });
     }
+  };
+
+  resetObservation = () => {
+    this.observer.unobserve(this.$bottomElement.current);
+    this.observer.unobserve(this.$topElement.current);
+    this.$bottomElement = React.createRef();
+    this.$topElement = React.createRef();
   };
 
   getReference = (index, isLastIndex) => {
