@@ -2,3 +2,21 @@
   font-family: sans-serif;
   text-align: center;
 }
+#list-container {
+  height: 70%;
+  /* border: 1px solid red; */
+  margin: 10px 30px;
+  padding: 10px 10px;
+}
+#list-container ul {
+  position: relative;
+}
+.list-item {
+  height: 70px;
+  text-align: center;
+  padding: 45px 0 0 0;
+  /* border: 1px solid green; */
+  margin-top: 20px;
+  list-style: none;
+  box-shadow: 2px 2px 9px 0px #bbb;
+}

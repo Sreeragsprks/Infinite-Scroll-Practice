@@ -1,11 +1,12 @@
 import React from "react";
 import "./styles.css";
+import List from "./List";
+import MY_ENDLESS_LIST from "./Constants";
 
 export default function App() {
   return (
     <div className="App">
-      <h1>Hello CodeSandbox</h1>
-      <h2>Start editing to see some magic happen!</h2>
+      <List list={MY_ENDLESS_LIST} height={190} />
     </div>
   );
 }
