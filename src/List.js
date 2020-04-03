@@ -14,6 +14,17 @@ export default class List extends React.Component {
     this.bottomElement = React.createRef();
   }
 
+  updateState = (newStart, newEnd) => {
+    const { start, end } = this.state;
+    if (start !== newStart || end !== newEnd) {
+      this.resetObservation();
+      this.setState({
+        start: newStart,
+        end: newEnd
+      });
+    }
+  };
+
   getReference = (index, isLastIndex) => {
     return index !== isLastIndex
       ? index === 0
