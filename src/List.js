@@ -74,18 +74,16 @@ export default class List extends React.Component {
   };
 
   resetObservation = () => {
-    this.observer.unobserve(this.$bottomElement.current);
-    this.observer.unobserve(this.$topElement.current);
-    this.$bottomElement = React.createRef();
-    this.$topElement = React.createRef();
+    this.observer.unobserve(this.bottomElement.current);
+    this.observer.unobserve(this.topElement.current);
+    this.bottomElement = React.createRef();
+    this.topElement = React.createRef();
   };
 
   getReference = (index, isLastIndex) => {
-    return index !== isLastIndex
-      ? index === 0
-        ? this.topElement
-        : null
-      : this.bottomElement;
+    if (index === 0) return this.topElement; // Attach this ref for first element
+    if (isLastIndex) return this.bottomElement; // Attach this ref for last element
+    return null;
   };
 
   render() {
