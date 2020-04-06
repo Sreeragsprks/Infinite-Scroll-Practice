@@ -27,7 +27,7 @@ export default class List extends React.Component {
     const options = {
       root: null,
       rootMargin: "0px",
-      threshold: 0.1
+      threshold: 0.01
     };
     this.observer = new IntersectionObserver(this.callBack, options);
     if (this.topElement.current) this.observer.observe(this.topElement.current);
@@ -74,18 +74,16 @@ export default class List extends React.Component {
   };
 
   resetObservation = () => {
-    this.observer.unobserve(this.$bottomElement.current);
-    this.observer.unobserve(this.$topElement.current);
-    this.$bottomElement = React.createRef();
-    this.$topElement = React.createRef();
+    this.observer.unobserve(this.bottomElement.current);
+    this.observer.unobserve(this.topElement.current);
+    this.bottomElement = React.createRef();
+    this.topElement = React.createRef();
   };
 
   getReference = (index, isLastIndex) => {
-    return index !== isLastIndex
-      ? index === 0
-        ? this.topElement
-        : null
-      : this.bottomElement;
+    if (index === 0) return this.topElement; // Attach this ref for first element
+    if (isLastIndex) return this.bottomElement; // Attach this ref for last element
+    return null;
   };
 
   render() {
@@ -98,7 +96,15 @@ export default class List extends React.Component {
       const top = height * (start + index) + "px";
       const refVal = this.getReference(index, index === lastIndex);
       const id = index === 0 ? "top" : index === lastIndex ? "bottom" : "";
-      return <ListItem data={data} top={top} refVal={refVal} id={id} />;
+      return (
+        <ListItem
+          key={data.key}
+          data={data.value}
+          top={top}
+          refVal={refVal}
+          id={id}
+        />
+      );
     });
     return (
       <div id="list-container">
