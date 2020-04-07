@@ -8,10 +8,13 @@
   padding: 10px 10px;
 }
 #list-container ul {
-  position: relative;
+  position: relative; /*parent needs to be relative*/
+  align-content: center;
 }
 .list-item {
+  position: absolute; /*child needs to be absolute*/
   height: 70px;
+  width: 50%;
   text-align: center;
   padding: 45px 0 0 0;
   margin-top: 20px;
