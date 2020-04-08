@@ -3,7 +3,7 @@ import ListItem from "./ListItem";
 
 // const THRESHOLD = 15;
 export default class List extends React.Component {
-  THRESHOLD = 15;
+  THRESHOLD = 5;
   constructor(props) {
     super(props);
     this.state = {
