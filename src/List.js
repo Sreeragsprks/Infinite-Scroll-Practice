@@ -1,20 +1,26 @@
-import React from "react";
-import ListItem from "./ListItem";
+import React from 'react';
+import axios from 'axios'
+import ListItem from './ListItem';
 
 // const THRESHOLD = 15;
 export default class List extends React.Component {
-  THRESHOLD = 5;
+  THRESHOLD = 15;
   constructor(props) {
     super(props);
     this.state = {
       start: 0,
-      end: this.THRESHOLD
+      end: this.THRESHOLD,
+      page: 1,
+      photos: []
     };
-    this.topElement = React.createRef();
-    this.bottomElement = React.createRef();
+    this.$topElement = React.createRef();
+    this.$bottomElement = React.createRef();
   }
 
-  componentDidMount = () => this.initiateScrollObserver();
+  componentDidMount = () => {
+    this.handleDataFetch(this.state.page);
+    this.initiateScrollObserver();
+  }
 
   componentDidUpdate = (prevProps, prevState) => {
     let { start, end } = this.state;
@@ -30,9 +36,10 @@ export default class List extends React.Component {
       threshold: 0.01
     };
     this.observer = new IntersectionObserver(this.callBack, options);
-    if (this.topElement.current) this.observer.observe(this.topElement.current);
-    if (this.bottomElement.current)
-      this.observer.observe(this.bottomElement.current);
+    if (this.$topElement.current) this.observer.observe(this.$topElement.current);
+    if (this.$bottomElement.current) {
+      this.observer.observe(this.$bottomElement.current);
+    }
   };
 
   callBack = (entries, observer) => {
@@ -47,6 +54,7 @@ export default class List extends React.Component {
         const newEnd = end + 10 <= maxEndIndex ? end + 10 : maxEndIndex;
         const newStart = end - 5 <= maxStartIndex ? end - 5 : maxStartIndex;
         this.updateState(newStart, newEnd);
+        // this.handleDataFetch(this.state.page);
       }
       // Scroll up
       if (entry.isIntersecting && entry.target.id === "top") {
@@ -74,22 +82,36 @@ export default class List extends React.Component {
   };
 
   resetObservation = () => {
-    this.observer.unobserve(this.bottomElement.current);
-    this.observer.unobserve(this.topElement.current);
-    this.bottomElement = React.createRef();
-    this.topElement = React.createRef();
+    this.observer.unobserve(this.$bottomElement.current);
+    this.observer.unobserve(this.$topElement.current);
+    this.$bottomElement = React.createRef();
+    this.$topElement = React.createRef();
   };
 
   getReference = (index, isLastIndex) => {
-    if (index === 0) return this.topElement; // Attach this ref for first element
-    if (isLastIndex) return this.bottomElement; // Attach this ref for last element
+    if (index === 0) return this.$topElement; // Attach this ref for first element
+    if (isLastIndex) return this.$bottomElement; // Attach this ref for last element
     return null;
   };
 
+  handleDataFetch = (page) => {
+    return axios
+    .get(`https://picsum.photos/v2/list?page=${page}&limit=5`)
+    .then(res => {
+      console.log('data', page, res.data);
+      this.setState({
+        page: this.state.page + 1,
+        photos: [...this.state.photos, ...res.data]
+      })
+    })
+  }
+
   render() {
     const { list, height } = this.props;
-    const { start, end } = this.state;
+    const { start, end , photos} = this.state;
     const updatedList = list.slice(start, end);
+    // const updatedList = photos.slice(start, end);
+    // console.log('updatedList', updatedList)
     const lastIndex = updatedList.length - 1;
 
     const listItem = updatedList.map((data, index) => {
