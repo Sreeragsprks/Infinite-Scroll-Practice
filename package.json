@@ -1,13 +1,11 @@
 {
-  "name": "react",
+  "name": "infinite-scroll-practice",
   "version": "1.0.0",
-  "description": "React example starter project",
-  "keywords": [
-    "react",
-    "starter"
-  ],
+  "description": "This sandbox is used create an infinite scroll component suing concepts like DOM recycling and Intersection Observer method",
+  "keywords": [],
   "main": "src/index.js",
   "dependencies": {
+    "axios": "0.19.2",
     "lodash": "4.17.15",
     "react": "16.12.0",
     "react-dom": "16.12.0",
