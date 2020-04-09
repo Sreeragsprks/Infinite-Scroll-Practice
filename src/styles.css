@@ -2,17 +2,17 @@
   font-family: sans-serif;
   text-align: center;
 }
-#list-container {
+/* #list-container {
   height: 70%;
   margin: 10px 30px;
   padding: 10px 10px;
-}
-#list-container ul {
-  position: relative; /*parent needs to be relative*/
+} */
+/* #list-container ul {
+  position: relative; 
   align-content: center;
 }
 .list-item {
-  position: absolute; /*child needs to be absolute*/
+  position: absolute; 
   height: 120px;
   width: 50%;
   text-align: center;
@@ -20,4 +20,4 @@
   margin-top: 20px;
   list-style: none;
   box-shadow: 2px 2px 9px 0px #bbb;
-}
+} */
