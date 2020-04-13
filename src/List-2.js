@@ -25,16 +25,16 @@ export default class NewList extends React.Component {
 
 	callBack = (entries, observer) => {
 		console.log('reached call back', this.state.prevY, entries[0].boundingClientRect.y)
-		const {users } = this.state;
+		const { users } = this.state;
 		const y = entries[0].boundingClientRect.y;
-		
+
 		// Scroll Down
 		if (this.state.prevY > y) {
-			const currPage = users[users.length - 1].id;
+			const currPage = users && users.length > 0 && users[users.length - 1].id;
 			this.handleDataFetch(currPage);
 			this.setState({ page: currPage });
 		}
-		this.setState({prevY: y})
+		this.setState({ prevY: y })
 
 		// Scroll up
 	};
@@ -47,13 +47,14 @@ export default class NewList extends React.Component {
 			.then(res => {
 				this.setState({
 					users: [...this.state.users, ...res.data],
+					// users: this.state.users.length > 0 ? this.state.users.unshift(...res.data) : res.data, 
 					loading: false
 				})
 			})
 	};
 
 	render() {
-		const {users} = this.state;
+		const { users } = this.state;
 		const loadingCSS = {
 			height: "50px",
 			margin: "30px"
@@ -61,9 +62,15 @@ export default class NewList extends React.Component {
 		const loadingTextCSS = { display: this.state.loading ? "block" : "none" };
 		return (
 			<div>
+				{/* <div
+					ref={loadingRef => (this.loadingRef = loadingRef)}
+					style={loadingCSS}
+				>
+					<span style={loadingTextCSS}>Loading...</span>
+				</div> */}
 				<div id="list-container">
-					<ul style={{listStyle: 'none', alignContent: 'center', textAlign: 'center', position: 'relative'}}>
-						{users.map((user, index) => {
+					<ul style={{ listStyle: 'none', alignContent: 'center', textAlign: 'center', position: 'relative' }}>
+						{users && users.length > 0 && users.map((user, index) => {
 							return (
 								<ListItem
 									key={user.id}
